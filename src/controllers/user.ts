@@ -35,7 +35,17 @@ export const register = async (req: Request, res: Response) => {
     // create user
     const user = await prisma.user.create({
       data: { name, email, password: hashedPassword },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        registrationDate: true,
+      },
     });
+
+    if (!user) {
+      res.status(500).json({ error: "Unable to create user" });
+    }
 
     res
       .status(201)

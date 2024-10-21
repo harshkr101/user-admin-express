@@ -32,6 +32,12 @@ export const createUser = async (req: Request, res: Response) => {
     // create user
     const user = await prisma.user.create({
       data: { name, email, password: hashedPassword, role },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        registrationDate: true,
+      },
     });
 
     res.status(201).json({ message: "User created successfully", data: user });
@@ -113,6 +119,12 @@ export const updateUser = async (req: Request, res: Response) => {
     const updatedUser = await prisma.user.update({
       where: { id: Number(id) },
       data: { name, email, role },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        registrationDate: true,
+      },
     });
 
     res.json({ message: "User updated successfully", data: updatedUser });
@@ -142,7 +154,7 @@ export const deleteUser = async (req: Request, res: Response) => {
     // delete user
     await prisma.user.delete({ where: { id: Number(id) } });
 
-    res.json({ message: "User deleted successfully" });
+    res.status(200).json({ message: "User deleted successfully" });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
